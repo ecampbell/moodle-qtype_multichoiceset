@@ -99,7 +99,7 @@ class qtype_combined_combinable_multichoiceset extends qtype_combined_combinable
      *
      * @param moodleform      $combinedform
      * @param MoodleQuickForm $mform
-     * @param                 $repeatenabled
+     * @param bool            $repeatenabled
      */
     public function add_form_fragment(moodleform $combinedform, MoodleQuickForm $mform, $repeatenabled) {
         $mform->addElement('advcheckbox', $this->form_field_name('shuffleanswers'), get_string('shuffle', 'qtype_gapselect'));
