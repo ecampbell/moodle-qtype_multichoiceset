@@ -38,10 +38,15 @@ class mobile {
     /**
      * Returns the All-or-Nothing question type for the quiz in the mobile app.
      *
+     * @param  array $args Arguments from tool_mobile_get_content WS
      * @return void
      */
-    public static function mobile_get_multichoiceset() {
+    public static function mobile_get_multichoiceset($args) {
         global $CFG;
+
+        $args = (object) $args;
+        $versionname = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
+
         // General notes:
         // If you have worked on mobile activities, there is no cmid or courseid in $args here.
         // This is not equivalent to mod/quiz/attempt.php?attempt=57&cmid=147, rather
@@ -50,7 +55,7 @@ class mobile {
         return [
             'templates' => [[
                 'id' => 'main',
-                'html' => file_get_contents($CFG->dirroot . '/question/type/multichoiceset/mobile/multichoiceset.html')
+                'html' => file_get_contents($CFG->dirroot . "/question/type/multichoiceset/mobile/multichoiceset_$versionname.html")
             ]],
             'javascript' => file_get_contents($CFG->dirroot . '/question/type/multichoiceset/mobile/multichoiceset.js')
         ];

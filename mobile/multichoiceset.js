@@ -22,7 +22,6 @@ var result = {
         // Replace Moodle's correct/incorrect classes, feedback and icons with mobile versions.
         that.CoreQuestionHelperProvider.replaceCorrectnessClasses(div);
         that.CoreQuestionHelperProvider.replaceFeedbackClasses(div);
-        that.CoreQuestionHelperProvider.treatCorrectnessIcons(div);
 
         // Get useful parts of the provided question html data.
         var questiontext = div.querySelector('.qtext');
@@ -43,13 +42,25 @@ var result = {
         var divs = answeroptions.querySelectorAll('div[class^=r]'); // Only get the answer options divs (class="r0...").
         divs.forEach(function(d, i) {
             // Each answer option contains all the data for presentation, it just needs extracting.
-            var label = d.querySelector('label').innerHTML;
-            var name = d.querySelector('label').getAttribute('for');
-            var checked = (d.querySelector('input[type=checkbox]').getAttribute('checked') ? true : false);
+            var checkbox = d.querySelector('input[type=checkbox]');
+            var feedbackDiv = d.querySelector('div.core-question-feedback-container');
+            var labelId = checkbox.getAttribute('aria-labelledby');
+            var labelElement = labelId ? d.querySelector('#' + labelId.replace(/:/g, '\\:')) : undefined;
+            if (!labelElement) {
+                // Not found, use the format used in older Moodle versions.
+                labelElement = d.querySelector('label');
+            }
+
+            var label = labelElement.innerHTML;
+            var name = checkbox.getAttribute('name');
+            var checked = (checkbox.getAttribute('checked') ? true : false);
             var disabled = (d.querySelector('input').getAttribute('disabled') === 'disabled' ? true : false);
-            var feedback = (d.querySelector('div') ? d.querySelector('div').innerHTML : '');
-            var qclass = d.getAttribute('class');
-            options.push({text: label, name: name, checked: checked, disabled: disabled, feedback: feedback, qclass: qclass});
+            var feedback = (feedbackDiv ? feedbackDiv.innerHTML : '');
+            var qclass = d.getAttribute('class') || '';
+            var iscorrect = qclass.indexOf('core-question-answer-correct') >= 0 ? 1 :
+                (qclass.indexOf('core-question-answer-incorrect') >= 0 ? 0 : undefined);
+            options.push({text: label, name: name, checked: checked, disabled: disabled, feedback: feedback, qclass: qclass,
+                iscorrect: iscorrect});
         });
         this.question.options = options;
 
