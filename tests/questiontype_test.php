@@ -39,11 +39,11 @@ class qtype_multichoiceset_test extends advanced_testcase {
     /** @var $qtype the question type. */
     protected $qtype;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $this->qtype = new qtype_multichoiceset();
     }
 
-    protected function tearDown() {
+    protected function tearDown(): void {
         $this->qtype = null;
     }
 
