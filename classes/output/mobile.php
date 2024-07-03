@@ -45,7 +45,7 @@ class mobile {
         global $CFG;
 
         $args = (object) $args;
-        $versionname = $args->appversioncode >= 3950 ? 'latest' : 'ionic3';
+        $versionname = $args->appversioncode >= 44000 ? 'latest' : 'ionic5';
 
         // General notes:
         // If you have worked on mobile activities, there is no cmid or courseid in $args here.

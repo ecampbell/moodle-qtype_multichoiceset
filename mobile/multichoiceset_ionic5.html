@@ -1,0 +1,29 @@
+<section *ngIf="question.text || question.text === ''" class="qtype-multichoiceset">
+    <ion-item class="ion-text-wrap">
+        <ion-label>
+            <p>
+                <core-format-text [component]="component" [componentId]="componentId" [text]="question.text"></core-format-text>
+            </p>
+            <p *ngIf="question.prompt">
+                <core-format-text [component]="component" [componentId]="componentId" [text]="question.prompt"></core-format-text>
+            </p>
+        </ion-label>
+    </ion-item>
+    <ion-item *ngFor="let option of question.options" class="ion-text-wrap {{option.qclass}}">
+        <ion-label>
+            <core-format-text [component]="component" [componentId]="componentId" [text]="option.text"></core-format-text>
+            <p *ngIf="option.feedback" class="core-question-feedback-container">
+                <core-format-text [text]="option.feedback"></core-format-text>
+            </p>
+        </ion-label>
+        <ion-checkbox [attr.name]="option.name" [(ngModel)]="option.checked" [disabled]="option.disabled"
+                slot="end"></ion-checkbox>
+
+        <ion-icon *ngIf="option.iscorrect === 1" class="core-correct-icon" name="fas-check" color="success"
+                [attr.aria-label]="'core.question.correct' | translate"></ion-icon>
+        <ion-icon *ngIf="option.iscorrect === 0" class="core-correct-icon" name="fas-times" color="danger"
+            [attr.aria-label]="'core.question.incorrect' | translate"></ion-icon>
+        <!-- ion-checkbox doesn't use an input. Create a hidden input to hold the value. -->
+        <input type="hidden" [ngModel]="option.checked" [attr.name]="option.name">
+    </ion-item>
+</section>
