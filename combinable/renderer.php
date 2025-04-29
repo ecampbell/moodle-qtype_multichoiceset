@@ -23,9 +23,6 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Combined question embedded sub question renderer class
  *
@@ -52,21 +49,21 @@ class qtype_multichoiceset_embedded_renderer extends qtype_renderer
         $fullresponse = new qtype_combined_response_array_param($qa->get_last_qt_data());
         $response = $fullresponse->for_subq($subq);
 
-        $commonattributes = array(
-            'type' => 'checkbox'
-        );
+        $commonattributes = [
+            'type' => 'checkbox',
+        ];
 
         if ($options->readonly) {
             $commonattributes['disabled'] = 'disabled';
         }
 
-        $checkboxes = array();
-        $feedbackimg = array();
-        $classes = array();
+        $checkboxes = [];
+        $feedbackimg = [];
+        $classes = [];
         foreach ($question->get_order($qa) as $value => $ansid) {
             $inputname = $qa->get_qt_field_name($subq->step_data_name('choice'.$value));
             $ans = $question->answers[$ansid];
-            $inputattributes = array();
+            $inputattributes = [];
             $inputattributes['name'] = $inputname;
             $inputattributes['value'] = 1;
             $inputattributes['id'] = $inputname;
@@ -76,11 +73,11 @@ class qtype_multichoiceset_embedded_renderer extends qtype_renderer
             }
             $hidden = '';
             if (!$options->readonly) {
-                $hidden = html_writer::empty_tag('input', array(
+                $hidden = html_writer::empty_tag('input', [
                     'type' => 'hidden',
                     'name' => $inputattributes['name'],
                     'value' => 0,
-                ));
+                ]);
             }
 
             $checkboxes[] = html_writer::empty_tag('input', $inputattributes + $commonattributes) .
@@ -113,10 +110,10 @@ class qtype_multichoiceset_embedded_renderer extends qtype_renderer
 
         foreach ($checkboxes as $key => $checkbox) {
             $cbhtml .= html_writer::tag($inputwraptag, $checkbox . ' ' . $feedbackimg[$key],
-                                        array('class' => $classes[$key])) . "\n";
+                                        ['class' => $classes[$key]]) . "\n";
         }
 
-        $result = html_writer::tag($inputwraptag, $cbhtml, array('class' => 'answer'));
+        $result = html_writer::tag($inputwraptag, $cbhtml, ['class' => 'answer']);
         $result = html_writer::div($result, $classname);
 
         return $result;

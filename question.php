@@ -59,7 +59,7 @@ class qtype_multichoiceset_question extends qtype_multichoice_multi_question {
 
         $state = question_state::graded_state_for_fraction($fraction);
 
-        return array($fraction, $state);
+        return [$fraction, $state];
     }
 
     /**

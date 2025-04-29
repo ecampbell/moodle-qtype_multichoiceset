@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Multiple choice all or nothing editing form definition.
  *
@@ -38,7 +36,7 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
      */
     protected function definition_inner($mform) {
         $mform->addElement('advcheckbox', 'shuffleanswers',
-                get_string('shuffleanswers', 'qtype_multichoice'), null, null, array(0, 1));
+                get_string('shuffleanswers', 'qtype_multichoice'), null, null, [0, 1]);
         $mform->addHelpButton('shuffleanswers', 'shuffleanswers', 'qtype_multichoice');
         $mform->setDefault('shuffleanswers', 1);
 
@@ -57,11 +55,11 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
 
         $mform->addElement('header', 'overallfeedbackhdr', get_string('combinedfeedback', 'question'));
 
-        foreach (array('correctfeedback', 'incorrectfeedback') as $feedbackname) {
+        foreach (['correctfeedback', 'incorrectfeedback'] as $feedbackname) {
             $element = $mform->addElement('editor', $feedbackname, get_string($feedbackname, 'question'),
-                                array('rows' => 5), $this->editoroptions);
+                                ['rows' => 5], $this->editoroptions);
             $mform->setType($feedbackname, PARAM_RAW);
-            $element->setValue(array('text' => get_string($feedbackname.'default', 'question')));
+            $element->setValue(['text' => get_string($feedbackname.'default', 'question')]);
 
             if ($feedbackname == 'incorrectfeedback') {
                 $mform->addElement('advcheckbox', 'shownumcorrect',
@@ -86,13 +84,13 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
      */
     protected function get_per_answer_fields($mform, $label, $gradeoptions,
             &$repeatedoptions, &$answersoption) {
-        $repeated = array();
+        $repeated = [];
         $repeated[] = $mform->createElement('editor', 'answer',
-                $label, array('rows' => 1), $this->editoroptions);
+                $label, ['rows' => 1], $this->editoroptions);
         $repeated[] = $mform->createElement('checkbox', 'correctanswer',
                 get_string('correctanswer', 'qtype_multichoiceset'), '', 'class = "correctanswer"');
         $repeated[] = $mform->createElement('editor', 'feedback',
-                get_string('feedback', 'question'), array('rows' => 1), $this->editoroptions);
+                get_string('feedback', 'question'), ['rows' => 1], $this->editoroptions);
 
         // These are returned by arguments passed by reference.
         $repeatedoptions['answer']['type'] = PARAM_RAW;
@@ -113,7 +111,7 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
                 $withclearwrong, $withshownumpartscorrect);
         $repeated[] = $this->_form->createElement('advcheckbox', 'hintshowchoicefeedback', '',
                 get_string('showeachanswerfeedback', 'qtype_multichoiceset'));
-        return array($repeated, $repeatedoptions);
+        return [$repeated, $repeatedoptions];
     }
 
     /**
@@ -151,12 +149,12 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
             $question->shownumcorrect = $question->options->shownumcorrect;
             $question->showstandardinstruction = $question->options->showstandardinstruction;
             // Prepare feedback editor to display files in draft area.
-            foreach (array('correctfeedback', 'incorrectfeedback') as $feedbackname) {
+            foreach (['correctfeedback', 'incorrectfeedback'] as $feedbackname) {
                 $draftid = file_get_submitted_draft_itemid($feedbackname);
                 $text = $question->options->$feedbackname;
                 $feedbackformat = $feedbackname . 'format';
                 $format = $question->options->$feedbackformat;
-                $defaultvalues[$feedbackname] = array();
+                $defaultvalues[$feedbackname] = [];
                 $defaultvalues[$feedbackname]['text'] = file_prepare_draft_area(
                     $draftid,
                     $this->context->id,

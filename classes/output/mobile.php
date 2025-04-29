@@ -24,8 +24,6 @@
 
 namespace qtype_multichoiceset\output;
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Mobile output class for question type multichoiceset.
  *
@@ -55,9 +53,10 @@ class mobile {
         return [
             'templates' => [[
                 'id' => 'main',
-                'html' => file_get_contents($CFG->dirroot . "/question/type/multichoiceset/mobile/multichoiceset_$versionname.html")
+                'html' => file_get_contents($CFG->dirroot .
+                            "/question/type/multichoiceset/mobile/multichoiceset_$versionname.html"),
             ]],
-            'javascript' => file_get_contents($CFG->dirroot . '/question/type/multichoiceset/mobile/multichoiceset.js')
+            'javascript' => file_get_contents($CFG->dirroot . '/question/type/multichoiceset/mobile/multichoiceset.js'),
         ];
     }
 }

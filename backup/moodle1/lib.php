@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * multichoiceset question type conversion handler
  *
@@ -38,10 +36,10 @@ class moodle1_qtype_multichoiceset_handler extends moodle1_qtype_handler {
      * @return array
      */
     public function get_question_subpaths() {
-        return array(
+        return [
             'ANSWERS/ANSWER',
             'MULTICHOICESET',
-        );
+        ];
     }
 
     /**
@@ -61,7 +59,7 @@ class moodle1_qtype_multichoiceset_handler extends moodle1_qtype_handler {
         if (!isset($data['multichoiceset'])) {
             // This should never happen, but it can do if the 1.9 site contained
             // corrupt data.
-            $data['multichoiceset'] = array(array(
+            $data['multichoiceset'] = [[
                 'shuffleanswers'                 => 1,
                 'correctfeedback'                => '',
                 'correctfeedbackformat'          => FORMAT_HTML,
@@ -69,8 +67,8 @@ class moodle1_qtype_multichoiceset_handler extends moodle1_qtype_handler {
                 'incorrectfeedbackformat'        => FORMAT_HTML,
                 'answernumbering'                => 'abc',
                 'shownumcorrect'                => 0,
-                'showstandardinstruction'        => 0
-            ));
+                'showstandardinstruction'        => 0,
+            ]];
         }
         $this->write_multichoiceset($data['multichoiceset'], $data['oldqtextformat']);
     }
@@ -94,7 +92,7 @@ class moodle1_qtype_multichoiceset_handler extends moodle1_qtype_handler {
             $multichoiceset['correctfeedbackformat']               = 0;
             $multichoiceset['incorrectfeedbackformat']             = 0;
 
-            if ($CFG->texteditors !== 'textarea' and $oldqtextformat == FORMAT_MOODLE) {
+            if ($CFG->texteditors !== 'textarea' && $oldqtextformat == FORMAT_MOODLE) {
                 $multichoiceset['correctfeedback']         = text_to_html($multichoiceset['correctfeedback'], false, false, true);
                 $multichoiceset['correctfeedbackformat']   = FORMAT_HTML;
                 $multichoiceset['incorrectfeedback']       = text_to_html($multichoiceset['incorrectfeedback'], false, false, true);
@@ -104,7 +102,7 @@ class moodle1_qtype_multichoiceset_handler extends moodle1_qtype_handler {
                 $multichoiceset['incorrectfeedbackformat'] = $oldqtextformat;
             }
 
-            $this->write_xml('multichoiceset', $multichoiceset, array('/multichoiceset/id'));
+            $this->write_xml('multichoiceset', $multichoiceset, ['/multichoiceset/id']);
         }
     }
 }

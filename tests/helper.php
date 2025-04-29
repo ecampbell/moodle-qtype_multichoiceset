@@ -23,9 +23,6 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Test helper class for the all or nothing multichoice question type.
  *
@@ -39,7 +36,7 @@ class qtype_multichoiceset_test_helper {
      * @return array
      */
     public function get_test_questions() {
-        return array('two_of_four');
+        return ['two_of_four'];
     }
 
     /**
@@ -58,12 +55,12 @@ class qtype_multichoiceset_test_helper {
         $mc->shuffleanswers = 1;
         $mc->answernumbering = 'abc';
         test_question_maker::set_standard_combined_feedback_fields($mc);
-        $mc->answers = array(
+        $mc->answers = [
             13 => new question_answer(13, 'One', 1.0, 'One is odd.', FORMAT_HTML),
             14 => new question_answer(14, 'Two', 0, 'Two is even.', FORMAT_HTML),
             15 => new question_answer(15, 'Three', 1.0, 'Three is odd.', FORMAT_HTML),
             16 => new question_answer(16, 'Four', 0, 'Four is even.', FORMAT_HTML),
-        );
+        ];
         return $mc;
     }
 
@@ -102,57 +99,57 @@ class qtype_multichoiceset_test_helper {
                 = test_question_maker::STANDARD_OVERALL_INCORRECT_FEEDBACK;
         $qdata->options->incorrectfeedbackformat = FORMAT_HTML;
 
-        $qdata->options->answers = array(
-            13 => (object) array(
+        $qdata->options->answers = [
+            13 => (object) [
                 'id' => 13,
                 'answer' => 'One',
                 'answerformat' => FORMAT_PLAIN,
                 'fraction' => '1.0',
                 'feedback' => 'One is odd.',
                 'feedbackformat' => FORMAT_HTML,
-            ),
-            14 => (object) array(
+            ],
+            14 => (object) [
                 'id' => 14,
                 'answer' => 'Two',
                 'answerformat' => FORMAT_PLAIN,
                 'fraction' => '0.0',
                 'feedback' => 'Two is even.',
                 'feedbackformat' => FORMAT_HTML,
-            ),
-            15 => (object) array(
+            ],
+            15 => (object) [
                 'id' => 15,
                 'answer' => 'Three',
                 'answerformat' => FORMAT_PLAIN,
                 'fraction' => '1.0',
                 'feedback' => 'Three is odd.',
                 'feedbackformat' => FORMAT_HTML,
-            ),
-            16 => (object) array(
+            ],
+            16 => (object) [
                 'id' => 16,
                 'answer' => 'Four',
                 'answerformat' => FORMAT_PLAIN,
                 'fraction' => '0.0',
                 'feedback' => 'Four is even.',
                 'feedbackformat' => FORMAT_HTML,
-            ),
-        );
+            ],
+        ];
 
-        $qdata->hints = array(
-            1 => (object) array(
+        $qdata->hints = [
+            1 => (object) [
                 'hint' => 'Hint 1.',
                 'hintformat' => FORMAT_HTML,
                 'shownumcorrect' => 1,
                 'clearwrong' => 0,
                 'options' => 0,
-            ),
-            2 => (object) array(
+            ],
+            2 => (object) [
                 'hint' => 'Hint 2.',
                 'hintformat' => FORMAT_HTML,
                 'shownumcorrect' => 1,
                 'clearwrong' => 1,
                 'options' => 1,
-            ),
-        );
+            ],
+        ];
 
         return $qdata;
     }
@@ -165,8 +162,8 @@ class qtype_multichoiceset_test_helper {
         $qdata = new stdClass();
 
         $qdata->name = 'All or nothing multiple choice choice question';
-        $qdata->questiontext = array('text' => 'Which are the odd numbers?', 'format' => FORMAT_HTML);
-        $qdata->generalfeedback = array('text' => 'The odd numbers are One and Three.', 'format' => FORMAT_HTML);
+        $qdata->questiontext = ['text' => 'Which are the odd numbers?', 'format' => FORMAT_HTML];
+        $qdata->generalfeedback = ['text' => 'The odd numbers are One and Three.', 'format' => FORMAT_HTML];
         $qdata->defaultmark = 1;
         $qdata->noanswers = 5;
         $qdata->numhints = 2;
@@ -175,70 +172,72 @@ class qtype_multichoiceset_test_helper {
         $qdata->shuffleanswers = 1;
         $qdata->answernumbering = '123';
         $qdata->single = '0';
-        $qdata->correctfeedback = array('text' => test_question_maker::STANDARD_OVERALL_CORRECT_FEEDBACK,
-                                                 'format' => FORMAT_HTML);
+        $qdata->correctfeedback = ['text' => test_question_maker::STANDARD_OVERALL_CORRECT_FEEDBACK,
+                                                 'format' => FORMAT_HTML,
+                                  ];
         $qdata->shownumcorrect = 1;
-        $qdata->incorrectfeedback = array('text' => test_question_maker::STANDARD_OVERALL_INCORRECT_FEEDBACK,
-                                                   'format' => FORMAT_HTML);
-        $qdata->correctanswer = array('1', '0', '1', '0', '0');
-        $qdata->answer = array(
-            0 => array(
+        $qdata->incorrectfeedback = ['text' => test_question_maker::STANDARD_OVERALL_INCORRECT_FEEDBACK,
+                                                   'format' => FORMAT_HTML,
+                                    ];
+        $qdata->correctanswer = ['1', '0', '1', '0', '0'];
+        $qdata->answer = [
+            0 => [
                 'text' => 'One',
-                'format' => FORMAT_PLAIN
-            ),
-            1 => array(
+                'format' => FORMAT_PLAIN,
+            ],
+            1 => [
                 'text' => 'Two',
-                'format' => FORMAT_PLAIN
-            ),
-            2 => array(
+                'format' => FORMAT_PLAIN,
+            ],
+            2 => [
                 'text' => 'Three',
-                'format' => FORMAT_PLAIN
-            ),
-            3 => array(
+                'format' => FORMAT_PLAIN,
+            ],
+            3 => [
                 'text' => 'Four',
-                'format' => FORMAT_PLAIN
-            ),
-            4 => array(
+                'format' => FORMAT_PLAIN,
+            ],
+            4 => [
                 'text' => '',
-                'format' => FORMAT_PLAIN
-            )
-        );
+                'format' => FORMAT_PLAIN,
+            ],
+        ];
 
-        $qdata->feedback = array(
-            0 => array(
+        $qdata->feedback = [
+            0 => [
                 'text' => 'One is odd.',
-                'format' => FORMAT_HTML
-            ),
-            1 => array(
+                'format' => FORMAT_HTML,
+            ],
+            1 => [
                 'text' => 'Two is even.',
-                'format' => FORMAT_HTML
-            ),
-            2 => array(
+                'format' => FORMAT_HTML,
+            ],
+            2 => [
                 'text' => 'Three is odd.',
-                'format' => FORMAT_HTML
-            ),
-            3 => array(
+                'format' => FORMAT_HTML,
+            ],
+            3 => [
                 'text' => 'Four is even.',
-                'format' => FORMAT_HTML
-            ),
-            4 => array(
+                'format' => FORMAT_HTML,
+            ],
+            4 => [
                 'text' => '',
-                'format' => FORMAT_HTML
-            )
-        );
+                'format' => FORMAT_HTML,
+            ],
+        ];
 
-        $qdata->hint = array(
-            0 => array(
+        $qdata->hint = [
+            0 => [
                 'text' => 'Hint 1.',
-                'format' => FORMAT_HTML
-            ),
-            1 => array(
+                'format' => FORMAT_HTML,
+            ],
+            1 => [
                 'text' => 'Hint 2.',
-                'format' => FORMAT_HTML
-            )
-        );
-        $qdata->hintclearwrong = array(0, 1);
-        $qdata->hintshownumcorrect = array(1, 1);
+                'format' => FORMAT_HTML,
+            ],
+        ];
+        $qdata->hintclearwrong = [0, 1];
+        $qdata->hintshownumcorrect = [1, 1];
 
         return $qdata;
     }

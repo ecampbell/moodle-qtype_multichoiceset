@@ -26,7 +26,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
+namespace qtype_multichoiceset;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -40,9 +40,14 @@ require_once($CFG->dirroot . '/question/type/multichoiceset/tests/helper.php');
  * @copyright  2010 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_multichoiceset_walkthrough_test extends qbehaviour_walkthrough_test_base {
+final class walkthrough_test extends qbehaviour_walkthrough_test_base {
 
-    public function test_deferredfeedback_feedback_multichoiceset() {
+    /**
+     * Get deferred feedback test data.
+     *
+     * @return void
+     */
+    public function test_deferredfeedback_feedback_multichoiceset(): void {
         // Create a multichoiceset question.
         $mc = $dd = test_question_maker::make_question('multichoiceset');
         $mc->shuffleanswers = false;
@@ -64,7 +69,12 @@ class qtype_multichoiceset_walkthrough_test extends qbehaviour_walkthrough_test_
                 new question_pattern_expectation('/class="r1"/'));
     }
 
-    public function test_deferredfeedback_resume_multichoiceset_right_right() {
+    /**
+     * Get deferred feedback test data.
+     *
+     * @return void
+     */
+    public function test_deferredfeedback_resume_multichoiceset_right_right(): void {
 
         // Create a multichoiceset question.
         $mc = $dd = test_question_maker::make_question('multichoiceset');

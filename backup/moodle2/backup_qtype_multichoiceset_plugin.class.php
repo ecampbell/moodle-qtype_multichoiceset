@@ -23,9 +23,6 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Provides the information to backup multichoiceset questions
  *
@@ -53,17 +50,19 @@ class backup_qtype_multichoiceset_plugin extends backup_qtype_plugin {
         $this->add_question_question_answers($pluginwrapper);
 
         // Now create the qtype own structures.
-        $multichoiceset = new backup_nested_element('multichoiceset', array('id'), array(
+        $multichoiceset = new backup_nested_element('multichoiceset', ['id'], [
             'layout', 'shuffleanswers',
             'correctfeedback', 'correctfeedbackformat',
             'incorrectfeedback', 'incorrectfeedbackformat', 'answernumbering',
-            'shownumcorrect', 'showstandardinstruction'));
+            'shownumcorrect', 'showstandardinstruction',
+            ],
+        );
 
         // Now the own qtype tree.
         $pluginwrapper->add_child($multichoiceset);
 
         // Set source to populate the data.
-        $multichoiceset->set_source_table('qtype_multichoiceset_options', array('questionid' => backup::VAR_PARENTID));
+        $multichoiceset->set_source_table('qtype_multichoiceset_options', ['questionid' => backup::VAR_PARENTID]);
 
         // Don't need to annotate ids nor files.
 
@@ -77,8 +76,9 @@ class backup_qtype_multichoiceset_plugin extends backup_qtype_plugin {
      * files to be processed both in backup and restore.
      */
     public static function get_qtype_fileareas() {
-        return array(
+        return [
             'correctfeedback' => 'question_created',
-            'incorrectfeedback' => 'question_created');
+            'incorrectfeedback' => 'question_created',
+            ];
     }
 }

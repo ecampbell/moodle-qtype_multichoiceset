@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-
+namespace qtype_multichoiceset;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -35,19 +35,36 @@ require_once($CFG->dirroot . '/question/type/multichoiceset/questiontype.php');
  * @copyright  2009 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-class qtype_multichoiceset_test extends advanced_testcase {
+final class questiontype_test extends advanced_testcase {
     /** @var $qtype the question type. */
     protected $qtype;
 
+    /**
+     * Set up test question.
+     *
+     * @return void
+     */
     protected function setUp(): void {
+        parent::setUp();
         $this->qtype = new qtype_multichoiceset();
     }
 
+    /**
+     * Shut down test question.
+     *
+     * @return void
+     */
     protected function tearDown(): void {
         $this->qtype = null;
+        parent::tearDown();
     }
 
-    public function test_name() {
+    /**
+     * Get test name.
+     *
+     * @return void
+     */
+    public function test_name(): void {
         $this->assertEquals($this->qtype->name(), 'multichoiceset');
     }
 
@@ -60,29 +77,44 @@ class qtype_multichoiceset_test extends advanced_testcase {
         $q = new stdClass();
         $q->id = 1;
         $q->options = new stdClass();
-        $q->options->answers[1] = (object) array('answer' => 'frog',
-                'answerformat' => FORMAT_HTML, 'fraction' => 1);
-        $q->options->answers[2] = (object) array('answer' => 'toad',
-                'answerformat' => FORMAT_HTML, 'fraction' => 0);
+        $q->options->answers[1] = (object) ['answer' => 'frog',
+                'answerformat' => FORMAT_HTML, 'fraction' => 1, ];
+        $q->options->answers[2] = (object) ['answer' => 'toad',
+                'answerformat' => FORMAT_HTML, 'fraction' => 0, ];
 
         return $q;
     }
 
-    public function test_can_analyse_responses() {
+    /**
+     * Check that we can analyse responses.
+     *
+     * @return void
+     */
+    public function test_can_analyse_responses(): void {
         $this->assertTrue($this->qtype->can_analyse_responses());
     }
 
-    public function test_get_random_guess_score() {
+    /**
+     * Get random score.
+     *
+     * @return void
+     */
+    public function test_get_random_guess_score(): void {
         $q = $this->get_test_question_data();
         $this->assertNull($this->qtype->get_random_guess_score($q));
     }
 
-    public function test_get_possible_responses() {
+    /**
+     * Get possible responses.
+     *
+     * @return void
+     */
+    public function test_get_possible_responses(): void {
         $q = $this->get_test_question_data();
 
-        $this->assertEquals(array(
-            1 => array(1 => new question_possible_response('frog', 1)),
-            2 => array(2 => new question_possible_response('toad', 0)),
-        ), $this->qtype->get_possible_responses($q));
+        $this->assertEquals([
+            1 => [1 => new question_possible_response('frog', 1)],
+            2 => [2 => new question_possible_response('toad', 0)],
+        ], $this->qtype->get_possible_responses($q));
     }
 }

@@ -23,9 +23,6 @@
  */
 
 
-defined('MOODLE_INTERNAL') || die();
-
-
 /**
  * Restore plugin class that provides the information needed to restore one multichoiceset qtype
  *
@@ -39,7 +36,7 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
      */
     protected function define_question_plugin_structure() {
 
-        $paths = array();
+        $paths = [];
 
         // This qtype uses question_answers, add them.
         $this->add_question_question_answers($paths);
@@ -78,7 +75,7 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
 
             // It is possible for old backup files to contain unique key violations.
             // We need to check to avoid that.
-            if (!$DB->record_exists('qtype_multichoiceset_options', array('questionid' => $data->questionid))) {
+            if (!$DB->record_exists('qtype_multichoiceset_options', ['questionid' => $data->questionid])) {
                 $newitemid = $DB->insert_record('qtype_multichoiceset_options', $data);
                 $this->set_mapping('qtype_multichoiceset_options', $oldid, $newitemid);
             }
@@ -106,7 +103,7 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
      * @return string the recoded order.
      */
     protected function recode_choice_order($order) {
-        $neworder = array();
+        $neworder = [];
         foreach (explode(',', $order) as $id) {
             if ($newid = $this->get_mappingid('question_answer', $id)) {
                 $neworder[] = $newid;
@@ -128,8 +125,8 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
      */
     public function recode_legacy_state_answer($state) {
         $answer = $state->answer;
-        $orderarr = array();
-        $responsesarr = array();
+        $orderarr = [];
+        $responsesarr = [];
         $lists = explode(':', $answer);
         // If only 1 list, answer is missing the order list, adjust.
         if (count($lists) == 1) {
@@ -167,9 +164,9 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
      */
     public static function define_decode_contents() {
 
-        $contents = array();
+        $contents = [];
 
-        $fields = array('correctfeedback', 'incorrectfeedback');
+        $fields = ['correctfeedback', 'incorrectfeedback'];
         $contents[] = new restore_decode_content('qtype_multichoiceset_options',
                 $fields, 'qtype_multichoiceset_options');
 

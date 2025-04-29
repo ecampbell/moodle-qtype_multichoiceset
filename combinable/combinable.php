@@ -41,7 +41,7 @@ class qtype_combined_combinable_type_multichoiceset extends qtype_combined_combi
      * @return array containing the numbering format
      */
     protected function extra_question_properties() {
-        return array('answernumbering' => 'abc') + $this->combined_feedback_properties();
+        return ['answernumbering' => 'abc'] + $this->combined_feedback_properties();
     }
 
     /**
@@ -50,7 +50,7 @@ class qtype_combined_combinable_type_multichoiceset extends qtype_combined_combi
      * @return array containing the numbering format
      */
     protected function extra_answer_properties() {
-        return array('feedback' => array('text' => '', 'format' => FORMAT_PLAIN));
+        return ['feedback' => ['text' => '', 'format' => FORMAT_PLAIN]];
     }
 
     /**
@@ -59,7 +59,7 @@ class qtype_combined_combinable_type_multichoiceset extends qtype_combined_combi
      * @return array containing the options
      */
     public function subq_form_fragment_question_option_fields() {
-        return array('shuffleanswers' => false);
+        return ['shuffleanswers' => false];
     }
 
     /**
@@ -71,7 +71,7 @@ class qtype_combined_combinable_type_multichoiceset extends qtype_combined_combi
     protected function transform_subq_form_data_to_full($subqdata) {
         $data = parent::transform_subq_form_data_to_full($subqdata);
         foreach ($data->answer as $anskey => $answer) {
-            $data->answer[$anskey] = array('text' => $answer['text'], 'format' => $answer['format']);
+            $data->answer[$anskey] = ['text' => $answer['text'], 'format' => $answer['format']];
         }
         return $this->add_per_answer_properties($data);
     }
@@ -104,7 +104,7 @@ class qtype_combined_combinable_multichoiceset extends qtype_combined_combinable
     public function add_form_fragment(moodleform $combinedform, MoodleQuickForm $mform, $repeatenabled) {
         $mform->addElement('advcheckbox', $this->form_field_name('shuffleanswers'), get_string('shuffle', 'qtype_gapselect'));
 
-        $answerels = array();
+        $answerels = [];
         $answerels[] = $mform->createElement('editor', $this->form_field_name('answer'),
                 get_string('choiceno', 'qtype_multichoice', '{no}'), ['rows' => 1]);
         $mform->setType($this->form_field_name('answer'), PARAM_RAW);
@@ -128,9 +128,9 @@ class qtype_combined_combinable_multichoiceset extends qtype_combined_combinable
             $repeatsatstart = $countanswers;
         }
 
-        $combinedform->repeat_elements(array($answergroupel),
+        $combinedform->repeat_elements([$answergroupel],
             $repeatsatstart,
-            array(),
+            [],
             $this->form_field_name('noofchoices'),
             $this->form_field_name('morechoices'),
             QUESTION_NUMANS_ADD,
@@ -146,7 +146,7 @@ class qtype_combined_combinable_multichoiceset extends qtype_combined_combinable
      * @return array
      */
     public function data_to_form($context, $fileoptions) {
-        $mroptions = array('answer' => array(), 'correctanswer' => array());
+        $mroptions = ['answer' => [], 'correctanswer' => []];
         if ($this->questionrec !== null) {
             foreach ($this->questionrec->options->answers as $questionrecanswer) {
                 $mroptions['answer'][]['text'] = $questionrecanswer->answer;
@@ -162,8 +162,8 @@ class qtype_combined_combinable_multichoiceset extends qtype_combined_combinable
      * @return array of errors if any
      */
     public function validate() {
-        $errors = array();
-        $nonemptyanswerblanks = array();
+        $errors = [];
+        $nonemptyanswerblanks = [];
         foreach ($this->formdata->answer as $anskey => $answer) {
             $answer = $answer['text'];
             if ('' !== trim($answer)) {

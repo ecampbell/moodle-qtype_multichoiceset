@@ -2,7 +2,8 @@ Release notes
 -------------
 
 Date          Version   Comment
-2022/08/11    1.10.1    Merge fixes from Joseph Rézeau, Alastair Spark and almadog to fix unit tests, version number, and presentation. 
+2025/04/29    1.10.2    Clean up code for 8.0 and style conventions.
+2022/08/11    1.10.1    Merge fixes from Joseph Rézeau, Alastair Spark and almadog to fix unit tests, version, and presentation. 
 2021/07/09    1.10.0    Fix 3.10 answer alignment (provided by Joseph Rézeau & David Foord).
 2021/07/12    1.9.1     Support Ionic 5, and fix 3.9 mobile app answer display (contributed by Dani Palou).
 2021/07/08    1.9.0     Add support for new Moodle 3.9 standard instruction flag.

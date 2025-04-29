@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Converts the multichoiceset info and writes it into the question.xml
  *
@@ -137,7 +135,7 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
         foreach ($problemids as $problem) {
             $DB->delete_records_select('question_multichoiceset',
                     'question = ? AND id > ?',
-                    array($problem->question, $problem->recordidtokeep));
+                    [$problem->question, $problem->recordidtokeep]);
         }
         $problemids->close();
 
@@ -163,7 +161,7 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
 
         // Define key question (foreign) to be dropped form qtype_multichoiceset_options.
         $table = new xmldb_table('qtype_multichoiceset_options');
-        $key = new xmldb_key('question', XMLDB_KEY_FOREIGN, array('question'), 'question', array('id'));
+        $key = new xmldb_key('question', XMLDB_KEY_FOREIGN, ['question'], 'question', ['id']);
 
         // Launch drop key question.
         $dbman->drop_key($table, $key);
@@ -191,7 +189,7 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
 
         // Define key questionid (foreign-unique) to be added to qtype_multichoiceset_options.
         $table = new xmldb_table('qtype_multichoiceset_options');
-        $key = new xmldb_key('questionid', XMLDB_KEY_FOREIGN_UNIQUE, array('questionid'), 'question', array('id'));
+        $key = new xmldb_key('questionid', XMLDB_KEY_FOREIGN_UNIQUE, ['questionid'], 'question', ['id']);
 
         // Launch add key questionid.
         $dbman->add_key($table, $key);
@@ -218,8 +216,7 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
     if ($oldversion < 2015040100) {
 
         // Fix wrong component for combined feedback files.
-        $params = array('component' => 'qtype_multichoiceset'
-                , 'filearea1' => 'correctfeedback', 'filearea2' => 'incorrectfeedback');
+        $params = ['component' => 'qtype_multichoiceset', 'filearea1' => 'correctfeedback', 'filearea2' => 'incorrectfeedback'];
         $sql = "component = :component AND (filearea = :filearea1 OR filearea = :filearea2)";
         $DB->set_field_select('files', 'component', 'question', $sql, $params);
 

@@ -22,8 +22,6 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-defined('MOODLE_INTERNAL') || die();
-
 /**
  * Class to convert multichoiceset question attempt data when upgrading to the new question engine.
  *
@@ -53,7 +51,7 @@ class qtype_multichoiceset_qe2_attempt_updater extends question_qtype_attempt_up
      * @return string
      */
     public function right_answer() {
-        $rightbits = array();
+        $rightbits = [];
         foreach ($this->question->options->answers as $ans) {
             if ($ans->fraction >= 0.000001) {
                 $rightbits[] = $this->to_text($ans->answer);
@@ -91,7 +89,7 @@ class qtype_multichoiceset_qe2_attempt_updater extends question_qtype_attempt_up
         $responses = $this->explode_answer($state->answer);
         if (!empty($responses)) {
             $responses = explode(',', $responses);
-            $bits = array();
+            $bits = [];
             foreach ($responses as $response) {
                 if (array_key_exists($response, $this->question->options->answers)) {
                     $bits[] = $this->to_text(
