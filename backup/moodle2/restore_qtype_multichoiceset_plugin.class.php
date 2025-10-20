@@ -172,4 +172,17 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
 
         return $contents;
     }
+
+    #[\Override]
+    public static function convert_backup_to_questiondata(array $backupdata): \stdClass {
+        global $CFG;
+        require_once($CFG->dirroot . '/question/type/multichoiceset/questiontype.php');
+        $questiondata = parent::convert_backup_to_questiondata($backupdata);
+        if (count(get_object_vars($questiondata->options)) <= 1) {
+            // In case we've ended up with a backup of a question that has no options, use default options.
+            $defaultoptions = (new qtype_multichoiceset())->create_default_options($questiondata);
+            $questiondata->options = (object) array_merge((array) $questiondata->options, (array) $defaultoptions);
+        }
+        return $questiondata;
+    }
 }
