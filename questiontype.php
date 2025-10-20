@@ -54,7 +54,7 @@ class qtype_multichoiceset extends question_type {
     public function get_question_options($question) {
         global $DB, $OUTPUT;
         $question->options = $DB->get_record('qtype_multichoiceset_options',
-                ['questionid' => $question->id], '*', MUST_EXIST);
+                ['questionid' => $question->id]);
         if ($question->options === false) {
             // If this has happened, then we have a problem.
             // For the user to be able to edit or delete this question, we need options.
@@ -72,7 +72,7 @@ class qtype_multichoiceset extends question_type {
      * @param object $question The queston we are working with.
      * @return object The options object.
      */
-    protected function create_default_options($question) {
+    public function create_default_options($question) {
         // Create a default question options record.
         $options = new stdClass();
         $options->questionid = $question->id;
@@ -85,13 +85,13 @@ class qtype_multichoiceset extends question_type {
         $options->incorrectfeedback = get_string('incorrectfeedbackdefault', 'question');
         $options->incorrectfeedbackformat = FORMAT_HTML;
 
-        $config = get_config('qtype_multichoiceset');
-        $options->single = $config->answerhowmany;
+        $numberingstyles = self::get_numbering_styles();
+        $options->single = 1;
         if (isset($question->layout)) {
             $options->layout = $question->layout;
         }
-        $options->answernumbering = $config->answernumbering;
-        $options->shuffleanswers = $config->shuffleanswers;
+        $options->answernumbering = array_key_first($numberingstyles);
+        $options->shuffleanswers = 1;
         $options->showstandardinstruction = 0;
         $options->shownumcorrect = 1;
 
