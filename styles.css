@@ -77,7 +77,7 @@ body#page-question-type-multichoiceset div[id^=fitem_id_][id*=feedback_] {
 }
 
 /* Middle. Added JR november 2021. */
-body#page-question-type-multichoiceset .correctanswer {
+body#page-question-type-multichoiceset div.correctanswer {
     margin-bottom: 0em;
     background: #eee;
     border: 1px solid #bbb;
