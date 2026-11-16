@@ -92,10 +92,8 @@ class qtype_multichoiceset extends question_type {
         }
 
         // Insert all the new answers.
-        $totalfraction = 0;
-        $maxfraction = -1;
         foreach ($question->answer as $key => $answerdata) {
-            if (trim($answerdata['text']) == '') {
+            if (!is_array($answerdata) || html_is_blank($answerdata['text'])) {
                 continue;
             }
 
@@ -486,7 +484,7 @@ class qtype_multichoiceset extends question_type {
                 ['#', 'answernumbering', 0, '#'], 'abc');
 
         $question->showstandardinstruction = $format->trans_single(
-                 $format->getpath($data, ['#', 'showstandardinstruction', 0, '#'], 1));
+                $format->getpath($data, ['#', 'showstandardinstruction', 0, '#'], 0));
 
         $question->correctfeedback = [];
         $question->correctfeedback['text'] = $format->getpath($data, ['#', 'correctfeedback', 0, '#', 'text', 0, '#'],
@@ -498,7 +496,7 @@ class qtype_multichoiceset extends question_type {
         // Restore files in correctfeedback.
         $files = $format->getpath($data, ['#', 'correctfeedback', 0, '#', 'file'], [], false);
         foreach ($files as $file) {
-            $filesdata = new stdclass;
+            $filesdata = new stdClass();
             $filesdata->content = $file['#'];
             $filesdata->encoding = $file['@']['encoding'];
             $filesdata->name = $file['@']['name'];
@@ -507,7 +505,7 @@ class qtype_multichoiceset extends question_type {
 
         $question->incorrectfeedback = [];
         $question->incorrectfeedback['text'] = $format->getpath($data, ['#', 'incorrectfeedback', 0, '#', 'text', 0, '#'],
-                '', true );
+                '', true);
         $question->incorrectfeedback['format'] = $format->trans_format(
                 $format->getpath($data, ['#', 'incorrectfeedback', 0, '@', 'format'],
                 $format->get_format($question->questiontextformat)));
@@ -515,7 +513,7 @@ class qtype_multichoiceset extends question_type {
         // Restore files in incorrectfeedback.
         $files = $format->getpath($data, ['#', 'incorrectfeedback', 0, '#', 'file'], [], false);
         foreach ($files as $file) {
-            $filesdata = new stdclass;
+            $filesdata = new stdClass();
             $filesdata->content = $file['#'];
             $filesdata->encoding = $file['@']['encoding'];
             $filesdata->name = $file['@']['name'];
@@ -539,7 +537,7 @@ class qtype_multichoiceset extends question_type {
 
             // Backwards compatibility.
             if (array_key_exists('correctanswer', $answer['#'])) {
-                $key = end(array_keys($question->correctanswer));
+                $key = array_key_last($question->correctanswer);
                 $question->correctanswer[$key] = $format->getpath($answer,
                         ['#', 'correctanswer', 0, '#'], 0);
             }
