@@ -22,6 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace qtype_multichoiceset;
 defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
@@ -35,7 +36,7 @@ require_once($CFG->dirroot . '/question/type/multichoiceset/tests/helper.php');
  * @copyright  2009 The Open University
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
-final class question_test extends advanced_testcase {
+final class question_test extends \advanced_testcase {
     /**
      * Get a test question.
      *
@@ -43,7 +44,7 @@ final class question_test extends advanced_testcase {
      * @return qtype_multichoiceset_question the requested question object.
      */
     protected function get_test_multichoiceset_question($which = null) {
-        return test_question_maker::make_question('multichoiceset', $which);
+        return \test_question_maker::make_question('multichoiceset', $which);
     }
 
     /**
@@ -53,7 +54,7 @@ final class question_test extends advanced_testcase {
      */
     public function test_get_expected_data(): void {
         $question = $this->get_test_multichoiceset_question('two_of_four');
-        $question->start_attempt(new question_attempt_step(), 1);
+        $question->start_attempt(new \question_attempt_step(), 1);
 
         $this->assertEquals(['choice0' => PARAM_BOOL, 'choice1' => PARAM_BOOL,
                 'choice2' => PARAM_BOOL, 'choice3' => PARAM_BOOL,
@@ -67,7 +68,7 @@ final class question_test extends advanced_testcase {
      */
     public function test_is_complete_response(): void {
         $question = $this->get_test_multichoiceset_question('two_of_four');
-        $question->start_attempt(new question_attempt_step(), 1);
+        $question->start_attempt(new \question_attempt_step(), 1);
 
         $this->assertFalse($question->is_complete_response([]));
         $this->assertFalse($question->is_complete_response(
@@ -84,7 +85,7 @@ final class question_test extends advanced_testcase {
      */
     public function test_is_gradable_response(): void {
         $question = $this->get_test_multichoiceset_question('two_of_four');
-        $question->start_attempt(new question_attempt_step(), 1);
+        $question->start_attempt(new \question_attempt_step(), 1);
 
         $this->assertFalse($question->is_gradable_response([]));
         $this->assertFalse($question->is_gradable_response(
@@ -102,16 +103,16 @@ final class question_test extends advanced_testcase {
     public function test_grading(): void {
         $question = $this->get_test_multichoiceset_question('two_of_four');
         $question->shuffleanswers = false;
-        $question->start_attempt(new question_attempt_step(), 1);
+        $question->start_attempt(new \question_attempt_step(), 1);
 
-        $this->assertEquals([1, question_state::$gradedright],
+        $this->assertEquals([1, \question_state::$gradedright],
                 $question->grade_response(['choice0' => '1', 'choice2' => '1']));
-        $this->assertEquals([0, question_state::$gradedwrong],
+        $this->assertEquals([0, \question_state::$gradedwrong],
                 $question->grade_response(['choice0' => '1']));
-        $this->assertEquals([0, question_state::$gradedwrong],
+        $this->assertEquals([0, \question_state::$gradedwrong],
                 $question->grade_response(
                         ['choice0' => '1', 'choice1' => '1', 'choice2' => '1']));
-        $this->assertEquals([0, question_state::$gradedwrong],
+        $this->assertEquals([0, \question_state::$gradedwrong],
                 $question->grade_response(['choice1' => '1']));
     }
 
@@ -124,7 +125,7 @@ final class question_test extends advanced_testcase {
     public function test_get_correct_response(): void {
         $question = $this->get_test_multichoiceset_question('two_of_four');
         $question->shuffleanswers = false;
-        $question->start_attempt(new question_attempt_step(), 1);
+        $question->start_attempt(new \question_attempt_step(), 1);
 
         $this->assertEquals(['choice0' => '1', 'choice2' => '1'],
                 $question->get_correct_response());
@@ -137,7 +138,7 @@ final class question_test extends advanced_testcase {
      */
     public function test_get_question_summary(): void {
         $mc = $this->get_test_multichoiceset_question('two_of_four');
-        $mc->start_attempt(new question_attempt_step(), 1);
+        $mc->start_attempt(new \question_attempt_step(), 1);
 
         $qsummary = $mc->get_question_summary();
 
@@ -155,10 +156,10 @@ final class question_test extends advanced_testcase {
     public function test_summarise_response(): void {
         $mc = $this->get_test_multichoiceset_question('two_of_four');
         $mc->shuffleanswers = false;
-        $mc->start_attempt(new question_attempt_step(), 1);
+        $mc->start_attempt(new \question_attempt_step(), 1);
 
         $summary = $mc->summarise_response(['choice1' => 1, 'choice2' => 1],
-                test_question_maker::get_a_qa($mc));
+                \test_question_maker::get_a_qa($mc));
 
         $this->assertEquals('Two; Three', $summary);
     }
@@ -171,11 +172,11 @@ final class question_test extends advanced_testcase {
     public function test_classify_response(): void {
         $mc = $this->get_test_multichoiceset_question('two_of_four');
         $mc->shuffleanswers = false;
-        $mc->start_attempt(new question_attempt_step(), 1);
+        $mc->start_attempt(new \question_attempt_step(), 1);
 
         $this->assertEquals([
-                    13 => new question_classified_response(13, 'One', 1.0),
-                    14 => new question_classified_response(14, 'Two', 0.0),
+                    13 => new \question_classified_response(13, 'One', 1.0),
+                    14 => new \question_classified_response(14, 'Two', 0.0),
                 ], $mc->classify_response(['choice0' => 1, 'choice1' => 1]));
 
         $this->assertEquals([], $mc->classify_response([]));
