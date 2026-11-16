@@ -52,50 +52,16 @@ class qtype_multichoiceset extends question_type {
      * @return void
      */
     public function get_question_options($question) {
-        global $DB, $OUTPUT;
-        $question->options = $DB->get_record('qtype_multichoiceset_options',
-                ['questionid' => $question->id], '*', MUST_EXIST);
-        if ($question->options === false) {
-            // If this has happened, then we have a problem.
-            // For the user to be able to edit or delete this question, we need options.
-            debugging("Question ID {$question->id} was missing an options record. Using default.", DEBUG_DEVELOPER);
+        global $DB;
 
-            $question->options = $this->create_default_options($question);
-        }
+        $question->options = $DB->get_record(
+                'qtype_multichoiceset_options',
+                ['questionid' => $question->id],
+                '*',
+                MUST_EXIST
+        );
 
         parent::get_question_options($question);
-    }
-
-    /**
-     * Create a default options object for the provided question.
-     *
-     * @param object $question The queston we are working with.
-     * @return object The options object.
-     */
-    protected function create_default_options($question) {
-        // Create a default question options record.
-        $options = new stdClass();
-        $options->questionid = $question->id;
-
-        // Get the default strings and just set the format.
-        $options->correctfeedback = get_string('correctfeedbackdefault', 'question');
-        $options->correctfeedbackformat = FORMAT_HTML;
-        $options->partiallycorrectfeedback = get_string('partiallycorrectfeedbackdefault', 'question');;
-        $options->partiallycorrectfeedbackformat = FORMAT_HTML;
-        $options->incorrectfeedback = get_string('incorrectfeedbackdefault', 'question');
-        $options->incorrectfeedbackformat = FORMAT_HTML;
-
-        $config = get_config('qtype_multichoiceset');
-        $options->single = $config->answerhowmany;
-        if (isset($question->layout)) {
-            $options->layout = $question->layout;
-        }
-        $options->answernumbering = $config->answernumbering;
-        $options->shuffleanswers = $config->shuffleanswers;
-        $options->showstandardinstruction = 0;
-        $options->shownumcorrect = 1;
-
-        return $options;
     }
 
     /**
