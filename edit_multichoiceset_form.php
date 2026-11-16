@@ -43,10 +43,15 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
         $mform->addElement('select', 'answernumbering',
                 get_string('answernumbering', 'qtype_multichoice'),
                 qtype_multichoice::get_numbering_styles());
-        $mform->setDefault('answernumbering', get_config('qtype_multichoiceset', 'answernumbering'));
+
+        $answernumbering = get_config('qtype_multichoiceset', 'answernumbering');
+        if ($answernumbering === false) {
+            $answernumbering = 'abc';
+        }
+        $mform->setDefault('answernumbering', $answernumbering);
 
         $mform->addElement('selectyesno', 'showstandardinstruction',
-            get_string('showstandardinstruction', 'qtype_multichoiceset'), null, null, [0, 1]);
+                get_string('showstandardinstruction', 'qtype_multichoiceset'), null, null, [0, 1]);
         $mform->addHelpButton('showstandardinstruction', 'showstandardinstruction', 'qtype_multichoiceset');
         $mform->setDefault('showstandardinstruction', 0);
 
@@ -188,8 +193,7 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
         $answercount = 0;
         $numberofcorrectanswers = 0;
         foreach ($answers as $key => $answer) {
-            $trimmedanswer = trim($answer['text']);
-            if (empty($trimmedanswer)) {
+            if (html_is_blank($answer['text'])) {
                 continue;
             }
 
