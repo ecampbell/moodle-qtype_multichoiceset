@@ -103,6 +103,37 @@ final class questiontype_test extends advanced_testcase {
         $this->assertNull($this->qtype->get_random_guess_score($q));
     }
 
+	/**
+	 * Empty editor values must not count as answers.
+	 *
+	 * @return void
+	 */
+	public function test_save_question_options_requires_two_non_empty_answers(): void {
+		$this->resetAfterTest();
+
+		$question = new stdClass();
+		$question->id = 999999;
+		$question->context = \context_system::instance();
+		$question->answer = [
+			[
+				'text' => 'One',
+				'format' => FORMAT_HTML,
+			],
+			[
+				'text' => '',
+				'format' => FORMAT_HTML,
+			],
+		];
+
+		$result = $this->qtype->save_question_options($question);
+
+		$this->assertObjectHasProperty('notice', $result);
+		$this->assertEquals(
+			get_string('notenoughanswers', 'qtype_multichoice', '2'),
+			$result->notice
+		);
+    }
+
     /**
      * Get possible responses.
      *

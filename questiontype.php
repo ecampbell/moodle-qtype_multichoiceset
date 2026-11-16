@@ -112,14 +112,15 @@ class qtype_multichoiceset extends question_type {
         $oldanswers = $DB->get_records('question_answers',
                 ['question' => $question->id], 'id ASC');
 
-        // Following hack to check at least two answers exist.
+        // Check that at least two non-empty answers exist.
         $answercount = 0;
-        foreach ($question->answer as $key => $answer) {
-            if ($answer != '') {
+        foreach ($question->answer as $answer) {
+            if (is_array($answer) && !html_is_blank($answer['text'])) {
                 $answercount++;
             }
         }
-        if ($answercount < 2) { // Check there are at lest 2 answers for multiple choice.
+
+        if ($answercount < 2) {
             $result->notice = get_string('notenoughanswers', 'qtype_multichoice', '2');
             return $result;
         }
