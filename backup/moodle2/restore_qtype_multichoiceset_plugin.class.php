@@ -51,6 +51,51 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
     }
 
     /**
+     * Convert backup data into the questiondata structure used for identity hashing.
+     *
+     * @param array $backupdata Parsed question data from the backup XML.
+     * @return stdClass Question data suitable for identity hashing.
+     */
+    public static function convert_backup_to_questiondata(array $backupdata): stdClass {
+        $questiondata = parent::convert_backup_to_questiondata($backupdata);
+
+        $pluginwrapper = $backupdata['plugin_qtype_multichoiceset_question'] ?? [];
+        $optionsrecords = $pluginwrapper['multichoiceset'] ?? [];
+
+        if (isset($optionsrecords[0]) && is_array($optionsrecords[0])) {
+            $options = $optionsrecords[0];
+        } else {
+            $options = $optionsrecords;
+        }
+
+        if (!empty($options)) {
+            if (!isset($questiondata->options)) {
+                $questiondata->options = new stdClass();
+            }
+
+            foreach ($options as $field => $value) {
+                $questiondata->options->{$field} = $value;
+            }
+        }
+
+        return $questiondata;
+    }
+
+    /**
+     * Define fields which must not participate in the question identity hash.
+     *
+     * These fields identify database records rather than question content.
+     *
+     * @return array
+     */
+    protected function define_excluded_identity_hash_fields(): array {
+        return [
+            '/options/id',
+            '/options/questionid',
+        ];
+    }
+
+    /**
      * Process the qtype/multichoiceset element
      *
      * @param stdObject $data question data
