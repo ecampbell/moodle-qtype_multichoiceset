@@ -362,11 +362,15 @@ class qtype_multichoiceset extends question_type {
         $parts = [];
 
         foreach ($questiondata->options->answers as $aid => $answer) {
-            $parts[$aid] = [$aid => new question_possible_response(
-                            html_to_text(format_text(
-                            $answer->answer, $answer->answerformat, ['noclean' => true]),
-                            0, false), $answer->fraction),
-                           ];
+            $parts[$aid] = [
+                $aid => new question_possible_response(
+                        question_utils::to_plain_text(
+                                $answer->answer,
+                                $answer->answerformat
+                        ),
+                        $answer->fraction
+                ),
+            ];
         }
 
         return $parts;
