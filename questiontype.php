@@ -314,13 +314,15 @@ class qtype_multichoiceset extends question_type {
      * Delete the question.
      *
      * @param int $questionid the question ID
-     * @param stdObject $contextid the context ID
-     * @return stdObject
+     * @param int $contextid the context ID
+     * @return void
      */
     public function delete_question($questionid, $contextid) {
         global $DB;
+
         $DB->delete_records('qtype_multichoiceset_options', ['questionid' => $questionid]);
-        return parent::delete_question($questionid, $contextid);
+
+        parent::delete_question($questionid, $contextid);
     }
 
     /**
