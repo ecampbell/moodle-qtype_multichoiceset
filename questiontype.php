@@ -202,7 +202,12 @@ class qtype_multichoiceset extends question_type {
         $numhints = max($numhints, $numshowfeedbacks);
 
         for ($i = 0; $i < $numhints; $i += 1) {
-            if (html_is_blank($formdata->hint[$i]['text'])) {
+            if (!isset($formdata->hint[$i])) {
+                $formdata->hint[$i] = [
+                    'text' => '',
+                    'format' => FORMAT_HTML,
+                ];
+            } else if (html_is_blank($formdata->hint[$i]['text'])) {
                 $formdata->hint[$i]['text'] = '';
             }
 
