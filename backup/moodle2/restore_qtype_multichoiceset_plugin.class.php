@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Restore handler for Moodle 2.x/3.x Multichoiceset questions
+ * Restore handler for Multichoiceset questions.
  *
  * @package    qtype_multichoiceset
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}
@@ -54,9 +54,10 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
      * Convert backup data into the questiondata structure used for identity hashing.
      *
      * @param array $backupdata Parsed question data from the backup XML.
-     * @return stdClass Question data suitable for identity hashing.
+     * @return \stdClass Question data suitable for identity hashing.
      */
-    public static function convert_backup_to_questiondata(array $backupdata): stdClass {
+    #[\Override]
+    public static function convert_backup_to_questiondata(array $backupdata): \stdClass {
         $questiondata = parent::convert_backup_to_questiondata($backupdata);
 
         $pluginwrapper = $backupdata['plugin_qtype_multichoiceset_question'] ?? [];
@@ -70,7 +71,7 @@ class restore_qtype_multichoiceset_plugin extends restore_qtype_plugin {
 
         if (!empty($options)) {
             if (!isset($questiondata->options)) {
-                $questiondata->options = new stdClass();
+                $questiondata->options = new \stdClass();
             }
 
             foreach ($options as $field => $value) {
