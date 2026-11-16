@@ -114,6 +114,8 @@ final class question_test extends \advanced_testcase {
                         ['choice0' => '1', 'choice1' => '1', 'choice2' => '1']));
         $this->assertEquals([0, \question_state::$gradedwrong],
                 $question->grade_response(['choice1' => '1']));
+        $this->assertEquals([0, \question_state::$gradedwrong],
+                $question->grade_response([]));
     }
 
     /**
