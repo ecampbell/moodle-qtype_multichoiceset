@@ -279,6 +279,27 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
     // Automatically generated Moodle v3.9.0 release upgrade line.
     // Put any upgrade step following this.
 
+    if ($oldversion < 2026111600) {
+
+        // Change the default for showstandardinstruction to disabled.
+        $table = new xmldb_table('qtype_multichoiceset_options');
+        $field = new xmldb_field(
+                'showstandardinstruction',
+                XMLDB_TYPE_INTEGER,
+                '2',
+                null,
+                XMLDB_NOTNULL,
+                null,
+                '0',
+                'shownumcorrect'
+        );
+
+        $dbman->change_field_default($table, $field);
+
+        // Record that qtype_multichoiceset savepoint was reached.
+        upgrade_plugin_savepoint(true, 2026111600, 'qtype', 'multichoiceset');
+    }
+
     return true;
 }
 
