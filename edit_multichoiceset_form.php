@@ -90,15 +90,34 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
     protected function get_per_answer_fields($mform, $label, $gradeoptions,
             &$repeatedoptions, &$answersoption) {
         $repeated = [];
-        $repeated[] = $mform->createElement('editor', 'answer',
-                $label, ['rows' => 1], $this->editoroptions);
-        $repeated[] = $mform->createElement('checkbox', 'correctanswer',
-                get_string('correctanswer', 'qtype_multichoiceset'), '', 'class = "correctanswer"');
-        $repeated[] = $mform->createElement('editor', 'feedback',
-                get_string('feedback', 'question'), ['rows' => 1], $this->editoroptions);
+
+        $repeated[] = $mform->createElement(
+                'editor',
+                'answer',
+                $label,
+                ['rows' => 1],
+                $this->editoroptions
+        );
+
+        $repeated[] = $mform->createElement(
+                'checkbox',
+                'correctanswer',
+                get_string('correctanswer', 'qtype_multichoiceset'),
+                '',
+                ['class' => 'correctanswer']
+        );
+
+        $repeated[] = $mform->createElement(
+                'editor',
+                'feedback',
+                get_string('feedback', 'question'),
+                ['rows' => 1],
+                $this->editoroptions
+        );
 
         // These are returned by arguments passed by reference.
         $repeatedoptions['answer']['type'] = PARAM_RAW;
+        $repeatedoptions['feedback']['type'] = PARAM_RAW;
         $answersoption = 'answers';
 
         return $repeated;
@@ -153,7 +172,10 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
             $question->answernumbering = $question->options->answernumbering;
             $question->shownumcorrect = $question->options->shownumcorrect;
             $question->showstandardinstruction = $question->options->showstandardinstruction;
-            // Prepare feedback editor to display files in draft area.
+
+            // Prepare feedback editors to display files in the draft area.
+            $defaultvalues = [];
+
             foreach (['correctfeedback', 'incorrectfeedback'] as $feedbackname) {
                 $draftid = file_get_submitted_draft_itemid($feedbackname);
                 $text = $question->options->$feedbackname;
@@ -161,20 +183,19 @@ class qtype_multichoiceset_edit_form extends question_edit_form {
                 $format = $question->options->$feedbackformat;
                 $defaultvalues[$feedbackname] = [];
                 $defaultvalues[$feedbackname]['text'] = file_prepare_draft_area(
-                    $draftid,
-                    $this->context->id,
-                    'question',
-                    $feedbackname,
-                    !empty($question->id) ? (int)$question->id : null,
-                    $this->fileoptions,
-                    $text
+                        $draftid,
+                        $this->context->id,
+                        'question',
+                        $feedbackname,
+                        !empty($question->id) ? (int) $question->id : null,
+                        $this->fileoptions,
+                        $text
                 );
                 $defaultvalues[$feedbackname]['format'] = $format;
                 $defaultvalues[$feedbackname]['itemid'] = $draftid;
             }
-            // Prepare files code block ends.
 
-            $question = (object)((array)$question + $defaultvalues);
+            $question = (object) ((array) $question + $defaultvalues);
         }
         return $question;
     }
