@@ -26,6 +26,28 @@ namespace qtype_multichoiceset;
 
 defined('MOODLE_INTERNAL') || die();
 
+global $CFG;
+
+require_once($CFG->dirroot . '/question/format/xml/format.php');
+
+/**
+ * XML format subclass allowing answer file state to be prepared for testing.
+ */
+class testable_qformat_xml extends \qformat_xml {
+
+    /**
+     * Initialise the file arrays normally prepared by the full XML exporter.
+     *
+     * @param array $answers Question answers.
+     */
+    public function prepare_answer_files(array $answers): void {
+        foreach ($answers as $answer) {
+            $this->answerfiles[$answer->id] = [];
+            $this->feedbackfiles[$answer->id] = [];
+        }
+    }
+}
+
 /**
  * Tests for Moodle XML import support.
  */
@@ -39,9 +61,84 @@ final class xml_test extends \advanced_testcase {
 
         parent::setUpBeforeClass();
 
-        require_once($CFG->dirroot . '/question/format/xml/format.php');
         require_once($CFG->dirroot . '/question/type/multichoiceset/questiontype.php');
     }
+
+    /**
+     * Exported XML should contain the multichoiceset-specific settings.
+     */
+    public function test_export_to_xml(): void {
+        $this->resetAfterTest();
+
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
+        $category = $generator->create_question_category();
+
+        $createdquestion = $generator->create_question(
+                'multichoiceset',
+                'two_of_four',
+                ['category' => $category->id]
+        );
+
+        $question = \question_bank::load_question_data($createdquestion->id);
+
+		$format = new testable_qformat_xml();
+		$format->prepare_answer_files($question->options->answers);
+
+		$qtype = new \qtype_multichoiceset();
+
+        $xml = $qtype->export_to_xml($question, $format);
+
+		$this->assertIsString($xml);
+		$this->assertNotSame('', $xml);
+
+		$this->assertStringContainsString(
+				'<shuffleanswers>true</shuffleanswers>',
+				$xml
+		);
+
+		$this->assertStringContainsString(
+				'<correctfeedback format="html">',
+				$xml
+		);
+
+		$this->assertStringContainsString(
+				'<incorrectfeedback format="html">',
+				$xml
+		);
+
+		$this->assertStringContainsString(
+				'<shownumcorrect/>',
+				$xml
+		);
+
+		$this->assertStringContainsString(
+				'<answernumbering>123</answernumbering>',
+				$xml
+		);
+
+		$this->assertStringContainsString(
+				'<showstandardinstruction>0</showstandardinstruction>',
+				$xml
+		);
+
+		$this->assertSame(
+				2,
+				substr_count($xml, '<answer fraction="100"')
+		);
+
+		$this->assertSame(
+				2,
+				substr_count($xml, '<answer fraction="0"')
+		);
+		$this->assertStringContainsString('<text>One</text>', $xml);
+		$this->assertStringContainsString('<text>Two</text>', $xml);
+		$this->assertStringContainsString('<text>Three</text>', $xml);
+		$this->assertStringContainsString('<text>Four</text>', $xml);
+
+		$this->assertStringContainsString('<text>Well done!</text>', $xml);
+		$this->assertStringContainsString('<text>That is not right at all.</text>', $xml);
+
+	}
 
     /**
      * Historical XML without showstandardinstruction should import correctly.
