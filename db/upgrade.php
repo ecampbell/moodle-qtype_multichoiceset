@@ -279,10 +279,153 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
     // Automatically generated Moodle v3.9.0 release upgrade line.
     // Put any upgrade step following this.
 
-    if ($oldversion < 2026111600) {
+       if ($oldversion < 2026111700) {
 
-        // Change the default for showstandardinstruction to disabled.
         $table = new xmldb_table('qtype_multichoiceset_options');
+
+        // Some installations retained multichoiceset questions after the
+        // question type's options table was lost. Recreate the table before
+        // backfilling conservative option defaults for those questions.
+        if (!$dbman->table_exists($table)) {
+            $table->add_field(
+                    'id',
+                    XMLDB_TYPE_INTEGER,
+                    '10',
+                    null,
+                    XMLDB_NOTNULL,
+                    XMLDB_SEQUENCE
+            );
+            $table->add_field(
+                    'questionid',
+                    XMLDB_TYPE_INTEGER,
+                    '10',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '0'
+            );
+            $table->add_field(
+                    'layout',
+                    XMLDB_TYPE_INTEGER,
+                    '4',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '0'
+            );
+            $table->add_field(
+                    'shuffleanswers',
+                    XMLDB_TYPE_INTEGER,
+                    '4',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '1'
+            );
+            $table->add_field(
+                    'correctfeedback',
+                    XMLDB_TYPE_TEXT,
+                    null,
+                    null,
+                    XMLDB_NOTNULL
+            );
+            $table->add_field(
+                    'correctfeedbackformat',
+                    XMLDB_TYPE_INTEGER,
+                    '2',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '0'
+            );
+            $table->add_field(
+                    'incorrectfeedback',
+                    XMLDB_TYPE_TEXT,
+                    null,
+                    null,
+                    XMLDB_NOTNULL
+            );
+            $table->add_field(
+                    'incorrectfeedbackformat',
+                    XMLDB_TYPE_INTEGER,
+                    '2',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '0'
+            );
+            $table->add_field(
+                    'answernumbering',
+                    XMLDB_TYPE_CHAR,
+                    '10',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    'abc'
+            );
+            $table->add_field(
+                    'shownumcorrect',
+                    XMLDB_TYPE_INTEGER,
+                    '2',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '0'
+            );
+            $table->add_field(
+                    'showstandardinstruction',
+                    XMLDB_TYPE_INTEGER,
+                    '2',
+                    null,
+                    XMLDB_NOTNULL,
+                    null,
+                    '1'
+            );
+
+            $table->add_key('primary', XMLDB_KEY_PRIMARY, ['id']);
+            $table->add_key(
+                    'questionid',
+                    XMLDB_KEY_FOREIGN_UNIQUE,
+                    ['questionid'],
+                    'question',
+                    ['id']
+            );
+
+            $dbman->create_table($table);
+        }
+
+        // Backfill options for surviving multichoiceset questions that do not
+        // already have an options row. Correct answers and answer-specific
+        // feedback remain stored in the standard question_answers table.
+        $missingquestionids = $DB->get_fieldset_sql(
+                "SELECT q.id
+                   FROM {question} q
+              LEFT JOIN {qtype_multichoiceset_options} o
+                     ON o.questionid = q.id
+                  WHERE q.qtype = :qtype
+                    AND o.id IS NULL",
+                ['qtype' => 'multichoiceset']
+        );
+
+        foreach ($missingquestionids as $questionid) {
+            $options = new stdClass();
+            $options->questionid = $questionid;
+            $options->layout = 0;
+            $options->shuffleanswers = 1;
+            $options->correctfeedback = '';
+            $options->correctfeedbackformat = FORMAT_MOODLE;
+            $options->incorrectfeedback = '';
+            $options->incorrectfeedbackformat = FORMAT_MOODLE;
+            $options->answernumbering = 'abc';
+            $options->shownumcorrect = 0;
+
+            // Preserve the historical schema default for recovered questions.
+            $options->showstandardinstruction = 1;
+
+            $DB->insert_record('qtype_multichoiceset_options', $options);
+        }
+
+        // New questions should use current plugin behaviour by default.
         $field = new xmldb_field(
                 'showstandardinstruction',
                 XMLDB_TYPE_INTEGER,
@@ -293,11 +436,9 @@ function xmldb_qtype_multichoiceset_upgrade($oldversion) {
                 '0',
                 'shownumcorrect'
         );
-
         $dbman->change_field_default($table, $field);
 
-        // Record that qtype_multichoiceset savepoint was reached.
-        upgrade_plugin_savepoint(true, 2026111600, 'qtype', 'multichoiceset');
+        upgrade_plugin_savepoint(true, 2026111700, 'qtype', 'multichoiceset');
     }
 
     return true;
