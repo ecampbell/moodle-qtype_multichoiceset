@@ -26,6 +26,7 @@ defined('MOODLE_INTERNAL') || die();
 
 global $CFG;
 require_once($CFG->dirroot . '/question/type/multichoiceset/questiontype.php');
+require_once($CFG->dirroot . '/question/tests/generator/lib.php');
 
 
 /**
@@ -56,6 +57,45 @@ final class questiontype_test extends advanced_testcase {
     protected function tearDown(): void {
         $this->qtype = null;
         parent::tearDown();
+    }
+
+    /**
+     * Hint options can create a hint even when the hint editor value is missing.
+     */
+    public function test_save_hints_with_missing_hint_editor(): void {
+        global $DB;
+
+        $this->resetAfterTest();
+
+        $generator = $this->getDataGenerator()->get_plugin_generator('core_question');
+        $category = $generator->create_question_category();
+        $question = $generator->create_question(
+                'multichoiceset',
+                'two_of_four',
+                ['category' => $category->id]
+        );
+
+        $formdata = new stdClass();
+        $formdata->id = $question->id;
+        $formdata->context = \context::instance_by_id($category->contextid);
+
+        // Deliberately omit $formdata->hint[0].
+        $formdata->hintshowchoicefeedback = [0 => 1];
+
+        $this->qtype->save_hints($formdata, true);
+
+        $hint = $DB->get_record(
+                'question_hints',
+                ['questionid' => $question->id],
+                '*',
+                MUST_EXIST
+        );
+
+        $this->assertSame('', $hint->hint);
+        $this->assertSame((string) FORMAT_HTML, (string) $hint->hintformat);
+        $this->assertSame('0', (string) $hint->clearwrong);
+        $this->assertSame('0', (string) $hint->shownumcorrect);
+        $this->assertSame('1', (string) $hint->options);
     }
 
     /**
@@ -101,6 +141,37 @@ final class questiontype_test extends advanced_testcase {
     public function test_get_random_guess_score(): void {
         $q = $this->get_test_question_data();
         $this->assertNull($this->qtype->get_random_guess_score($q));
+    }
+
+	/**
+	 * Empty editor values must not count as answers.
+	 *
+	 * @return void
+	 */
+	public function test_save_question_options_requires_two_non_empty_answers(): void {
+		$this->resetAfterTest();
+
+		$question = new stdClass();
+		$question->id = 999999;
+		$question->context = \context_system::instance();
+		$question->answer = [
+			[
+				'text' => 'One',
+				'format' => FORMAT_HTML,
+			],
+			[
+				'text' => '',
+				'format' => FORMAT_HTML,
+			],
+		];
+
+		$result = $this->qtype->save_question_options($question);
+
+		$this->assertObjectHasProperty('notice', $result);
+		$this->assertEquals(
+			get_string('notenoughanswers', 'qtype_multichoice', '2'),
+			$result->notice
+		);
     }
 
     /**

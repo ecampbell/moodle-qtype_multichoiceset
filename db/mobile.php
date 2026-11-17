@@ -1,5 +1,5 @@
 <?php
-// This file is part of the Certificate module for Moodle - http://moodle.org/
+// This file is part of Moodle - http://moodle.org/
 //
 // Moodle is free software: you can redistribute it and/or modify
 // it under the terms of the GNU General Public License as published by
@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * qtype_multichoiceset capability definition
+ * Mobile app support for qtype_multichoiceset.
  *
  * @package    qtype_multichoiceset
  * @copyright  2018 Jean-Michel Vedrine

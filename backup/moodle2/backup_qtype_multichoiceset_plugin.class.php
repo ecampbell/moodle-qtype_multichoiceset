@@ -15,7 +15,7 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * Backup handler for Moodle 2.x/3.x Multichoiceset questions
+ * Backup handler for Multichoiceset questions.
  *
  * @package    qtype_multichoiceset
  * @copyright  2010 onwards Eloy Lafuente (stronk7) {@link http://stronk7.com}

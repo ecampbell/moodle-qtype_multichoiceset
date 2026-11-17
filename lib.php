@@ -27,9 +27,6 @@
 /**
  * Checks file access for All or Nothing multiple choice questions.
  *
- * Extract the WordProcessingML XML files from the .docx file, and use a sequence of XSLT
- * steps to convert it into Moodle Question XML
- *
  * @param stdClass $course course settings object
  * @param object $cm the course module object representing the activity
  * @param stdClass $context context object
